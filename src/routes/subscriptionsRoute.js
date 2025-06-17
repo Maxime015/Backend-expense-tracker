@@ -7,13 +7,6 @@ import {
 
 const router = express.Router();
 
-// Middleware de validation pour userId
-router.param('userId', (req, res, next, userId) => {
-  if (isNaN(parseInt(userId))) {
-    return res.status(400).json({ message: 'Invalid user ID' });
-  }
-  next();
-});
 
 // Routes (sans préfixe supplémentaire)
 router.get('/:userId', getSubscriptionByUserId);

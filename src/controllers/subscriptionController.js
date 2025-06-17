@@ -127,22 +127,20 @@ export async function deleteSubscription(req, res) {
   }
 };
 
-// Récupère le résumé financier
 export async function getSummaryByUserId(req, res) {
   try {
     const { userId } = req.params;
 
-    if (!userId || isNaN(parseInt(userId))) {
-      return res.status(400).json({ message: 'Invalid user ID' });
-    }
-
     const [result] = await sql`
-      SELECT COALESCE(SUM(amount), 0)::float as total
+      SELECT 
+        COALESCE(SUM(amount), 0)::float as total,
+        COUNT(*)::int as count
       FROM subscriptions 
       WHERE user_id = ${userId}`;
 
     res.status(200).json({
-      total: result.total || 0
+      total: result.total || 0,
+      count: result.count || 0
     });
 
   } catch (error) {
