@@ -1,0 +1,24 @@
+import express from 'express';
+import { 
+  createSubscription, 
+  deleteSubscription, 
+  getSummaryByUserId, 
+  getSubscriptionByUserId } from '../controllers/subscriptionController.js';
+
+const router = express.Router();
+
+// Middleware de validation pour userId
+router.param('userId', (req, res, next, userId) => {
+  if (isNaN(parseInt(userId))) {
+    return res.status(400).json({ message: 'Invalid user ID' });
+  }
+  next();
+});
+
+// Routes (sans préfixe supplémentaire)
+router.get('/:userId', getSubscriptionByUserId);
+router.post('/', createSubscription);
+router.delete('/:id', deleteSubscription);
+router.get('/summary/:userId', getSummaryByUserId);
+
+export default router;
