@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 
-// Routes (sans préfixe supplémentaire)
+// Routes 
 router.get('/:userId', getSubscriptionByUserId);
 router.post('/', createSubscription);
 router.delete('/:id', deleteSubscription);
