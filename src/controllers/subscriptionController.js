@@ -17,7 +17,7 @@ const validateSubscriptionData = (data) => {
     errors.push(`Recurrence must be one of: ${validRecurrences.join(', ')}`);
   }
   
-  if (!data.user_id || isNaN(parseInt(data.user_id))) errors.push('Invalid user ID');
+  if (!data.user_id) errors.push('Invalid user ID');
 
   console.error('Validation Errors:', errors);
   
@@ -221,3 +221,4 @@ export async function getSummaryByUserId(req, res) {
     });
   }
 };
+
