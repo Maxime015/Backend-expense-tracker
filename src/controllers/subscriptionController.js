@@ -18,6 +18,8 @@ const validateSubscriptionData = (data) => {
   }
   
   if (!data.user_id || isNaN(parseInt(data.user_id))) errors.push('Invalid user ID');
+
+  console.error('Validation Errors:', errors);
   
   return errors.length > 0 ? errors : null;
 };
@@ -29,6 +31,8 @@ const uploadImageToCloudinary = async (imageDataUrl) => {
     
     // Extraire le base64 de la Data URL
     const base64Data = imageDataUrl.replace(/^data:image\/\w+;base64,/, '');
+
+    console.log("Uploading image:", imageDataUrl);
     
     const result = await cloudinary.uploader.upload(
       `data:image/jpeg;base64,${base64Data}`,
