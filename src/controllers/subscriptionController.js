@@ -42,6 +42,10 @@ const uploadImageToCloudinary = async (imageDataUrl) => {
         overwrite: true
       }
     );
+
+    console.log("Base64 data:", base64Data.slice(0, 100)); // Vérifiez le début du contenu Base64
+    console.log("Upload response:", result);
+
     
     return result.secure_url;
   } catch (error) {
