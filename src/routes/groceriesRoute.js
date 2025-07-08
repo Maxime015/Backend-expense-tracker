@@ -5,6 +5,7 @@ import {
   toggleGrocerie,
   updateGrocerie,
   deleteGrocerie,
+  getGroceriesSummary,
   clearAllGroceries
 } from '../controllers/grocerieController.js';
 
