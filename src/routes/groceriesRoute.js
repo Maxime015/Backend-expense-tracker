@@ -28,4 +28,7 @@ router.delete('/:id', deleteGrocerie);
 // DELETE /groceries - Supprimer tous les groceries d'un utilisateur
 router.delete('/', clearAllGroceries);
 
+// GET /groceries/summary/:userId - Obtenir le résumé des courses
+router.get('/summary/:userId', getGroceriesSummary);
+
 export default router;

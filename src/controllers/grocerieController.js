@@ -79,19 +79,19 @@ export async function deleteGrocerie(req, res) {
   try {
     const { id } = req.params;
 
-    const { count } = await sql`
+    const result = await sql`
       DELETE FROM groceries WHERE id = ${id}
+      RETURNING id
     `;
     
-    if (count === 0) {
-      return res.status(404).json({ error: 'Grocerie not found' });
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Article non trouvé' });
     }
     
-    res.status(200).json({ message: 'Grocerie deleted successfully' });
-    res.status(204).end();
+    res.status(200).json({ message: 'Article supprimé avec succès' });
   } catch (err) {
-    console.error('Error deleting grocerie:', err);
-    res.status(500).json({ error: 'Failed to delete grocerie' });
+    console.error('Erreur suppression article:', err);
+    res.status(500).json({ error: 'Échec de la suppression' });
   }
 };
 
@@ -140,5 +140,31 @@ export async function clearAllGroceries(req, res) {
   } catch (err) {
     console.error('Error clearing groceries:', err);
     res.status(500).json({ error: 'Failed to clear groceries' });
+  }
+};
+
+
+
+// Obtenir le résumé des courses (total et nombre complétés)
+export async function getGroceriesSummary(req, res) {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: 'ID utilisateur requis' });
+    }
+
+    const result = await sql`
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN is_completed = TRUE THEN 1 ELSE 0 END) as completed
+      FROM groceries 
+      WHERE user_id = ${userId}
+    `;
+    
+    res.status(200).json(result[0]);
+  } catch (error) {
+    console.error('Erreur récupération résumé courses:', error);
+    res.status(500).json({ message: 'Erreur serveur interne' });
   }
 };
