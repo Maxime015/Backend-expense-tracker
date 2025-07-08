@@ -28,6 +28,15 @@ export async function initDB() {
       created_at DATE NOT NULL DEFAULT CURRENT_DATE
     )`;
 
+    await sql`
+      CREATE TABLE IF NOT EXISTS groceries (
+        id SERIAL PRIMARY KEY,
+        user_id VARCHAR(255) NOT NULL,
+        text TEXT NOT NULL,
+        is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  )`;
+
     console.log('Base de données initialisée avec succès');
 
   } catch (error) {

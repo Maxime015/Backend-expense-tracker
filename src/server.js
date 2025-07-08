@@ -16,10 +16,11 @@ const swaggerDocument = YAML.load(join(__dirname, './swagger.yaml'));
 
 import subscriptionsRoute from './routes/subscriptionsRoute.js';
 import transactionsRoute from './routes/transactionsRoute.js';
+import groceriesRoute from './routes/groceriesRoute.js';
 import job from './config/cron.js';
 
 dotenv.config();
-
+ 
 const app = express();
 
 // Sécurité de base
@@ -84,6 +85,8 @@ app.use('/api-docs',
 app.use('/api/subscriptions', subscriptionsRoute);
 
 app.use('/api/transactions', transactionsRoute);
+
+app.use('/api/groceries', groceriesRoute);
 
 // 404 Handler
 app.use((req, res) => {

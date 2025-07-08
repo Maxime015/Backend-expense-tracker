@@ -98,4 +98,4 @@ export async function getSummaryByUserId(req, res) {
     console.log('Error fetching summary', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-}; 
+};  
