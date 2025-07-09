@@ -115,27 +115,37 @@ export async function updateGrocerie(req, res) {
     const { id } = req.params;
     const { text } = req.body;
 
-    if (!text) {
-      return res.status(400).json({ error: 'Text is required' });
+    if (!id || isNaN(parseInt(id))) {
+      return res.status(400).json({ error: 'ID invalide' });
+    }
+
+    if (!text || typeof text !== 'string') {
+      return res.status(400).json({ error: 'Texte invalide' });
     }
 
     const [updated] = await sql`
       UPDATE groceries
       SET text = ${text}
-      WHERE id = ${id}
+      WHERE id = ${parseInt(id)}
       RETURNING *
     `;
     
     if (!updated) {
-      return res.status(404).json({ error: 'Grocery not found' });
+      return res.status(404).json({ error: 'Course non trouvée' });
     }
     
     res.json(updated);
+    console.log('Received update for id:', id, 'with text:', text);
   } catch (err) {
-    console.error('Error updating grocery:', err);
-    res.status(500).json({ error: 'Failed to update grocery' });
+    console.error('Erreur mise à jour:', err);
+    res.status(500).json({ 
+      error: 'Échec de la mise à jour',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
+
+
 
 // Supprimer tous les groceries d'un utilisateur
 export async function clearAllGroceries(req, res) {
