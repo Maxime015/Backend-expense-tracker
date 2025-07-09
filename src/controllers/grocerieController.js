@@ -41,8 +41,8 @@ export async function addGrocerie(req, res) {
     
     res.status(201).json(newGrocerie);
   } catch (err) {
-    console.error('Error adding grocerie:', err);
-    res.status(500).json({ error: 'Failed to add grocerie' });
+    console.error('Error adding grocery:', err);
+    res.status(500).json({ error: 'Failed to add grocery' });
   }
 };
 
@@ -57,7 +57,7 @@ export async function toggleGrocerie(req, res) {
     `;
     
     if (!grocerie) {
-      return res.status(404).json({ error: 'Grocerie not found' });
+      return res.status(404).json({ error: 'Grocery not found' });
     }
 
     const [updated] = await sql`
@@ -69,8 +69,8 @@ export async function toggleGrocerie(req, res) {
     
     res.json(updated);
   } catch (err) {
-    console.error('Error toggling grocerie:', err);
-    res.status(500).json({ error: 'Failed to toggle grocerie' });
+    console.error('Error toggling grocery:', err);
+    res.status(500).json({ error: 'Failed to toggle grocery' });
   }
 };
 
@@ -85,13 +85,20 @@ export async function deleteGrocerie(req, res) {
     `;
     
     if (result.length === 0) {
-      return res.status(404).json({ error: 'Article non trouvé' });
+      return res.status(404).json({ error: 'Grocery not found' });
     }
     
-    res.status(200).json({ message: 'Article supprimé avec succès' });
+    // Retourner une seule réponse
+    res.status(200).json({ 
+      message: 'Grocery deleted successfully',
+      deletedId: result[0].id
+    });
   } catch (err) {
-    console.error('Erreur suppression article:', err);
-    res.status(500).json({ error: 'Échec de la suppression' });
+    console.error('Grocery deletion error:', err);
+    res.status(500).json({ 
+      error: 'Deletion failed',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 
@@ -113,13 +120,13 @@ export async function updateGrocerie(req, res) {
     `;
     
     if (!updated) {
-      return res.status(404).json({ error: 'Grocerie not found' });
+      return res.status(404).json({ error: 'Grocery not found' });
     }
     
     res.json(updated);
   } catch (err) {
-    console.error('Error updating grocerie:', err);
-    res.status(500).json({ error: 'Failed to update grocerie' });
+    console.error('Error updating grocery:', err);
+    res.status(500).json({ error: 'Failed to update grocery' });
   }
 };
 
@@ -151,7 +158,7 @@ export async function getGroceriesSummary(req, res) {
     const { userId } = req.params;
 
     if (!userId) {
-      return res.status(400).json({ message: 'ID utilisateur requis' });
+      return res.status(400).json({ message: 'User ID is required' });
     }
 
     const result = await sql`
@@ -164,7 +171,7 @@ export async function getGroceriesSummary(req, res) {
     
     res.status(200).json(result[0]);
   } catch (error) {
-    console.error('Erreur récupération résumé courses:', error);
-    res.status(500).json({ message: 'Erreur serveur interne' });
+    console.error('Error recovery summary races:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
