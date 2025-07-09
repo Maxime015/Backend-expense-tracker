@@ -152,20 +152,32 @@ export async function clearAllGroceries(req, res) {
   try {
     const { userId } = req.body;
     
+    console.log("Received clear request for user:", userId); // Debug log
+    
     if (!userId) {
-      return res.status(400).json({ error: 'User ID is required' });
+      return res.status(400).json({ 
+        error: 'User ID is required in request body',
+        receivedBody: req.body // Log du corps reçu
+      });
     }
 
-    const { count } = await sql`
+    const result = await sql`
       DELETE FROM groceries WHERE user_id = ${userId}
+      RETURNING *
     `;
-    res.status(200).json({ message: 'All groceries deleted successfully' });
-    res.json({ deletedCount: count });
+    
+    res.status(200).json({ 
+      message: 'All groceries deleted successfully',
+      deletedCount: result.length
+    });
   } catch (err) {
     console.error('Error clearing groceries:', err);
-    res.status(500).json({ error: 'Failed to clear groceries' });
+    res.status(500).json({ 
+      error: 'Failed to clear groceries',
+      details: process.env.NODE_ENV !== 'production' ? err.message : undefined
+    });
   }
-};
+}
 
 
 
