@@ -79,28 +79,35 @@ export async function deleteGrocerie(req, res) {
   try {
     const { id } = req.params;
 
+    // Validation supplémentaire
+    if (!id || isNaN(parseInt(id))) {
+      return res.status(400).json({ error: 'ID invalide' });
+    }
+
     const result = await sql`
-      DELETE FROM groceries WHERE id = ${id}
+      DELETE FROM groceries 
+      WHERE id = ${parseInt(id)}
       RETURNING id
     `;
     
     if (result.length === 0) {
-      return res.status(404).json({ error: 'Grocery not found' });
+      return res.status(404).json({ error: 'Article non trouvé' });
     }
     
-    // Retourner une seule réponse
     res.status(200).json({ 
-      message: 'Grocery deleted successfully',
+      message: 'Article supprimé avec succès',
       deletedId: result[0].id
     });
   } catch (err) {
-    console.error('Grocery deletion error:', err);
+    console.error('Erreur suppression article:', err);
     res.status(500).json({ 
-      error: 'Deletion failed',
+      error: 'Échec de la suppression',
       details: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }
 };
+
+
 
 // Mettre à jour le texte d'un grocery
 export async function updateGrocerie(req, res) {
