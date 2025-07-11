@@ -15,6 +15,7 @@ export async function initDB() {
         amount NUMERIC(10, 2) NOT NULL, 
         date DATE NOT NULL,
         recurrence VARCHAR(50) NOT NULL,
+        rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
         image_url VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`;

@@ -17,6 +17,11 @@ const validateSubscriptionData = (data) => {
     errors.push(`Recurrence must be one of: ${validRecurrences.join(', ')}`);
   }
   
+  const rating = parseInt(data.rating);
+  if (isNaN(rating) || rating < 1 || rating > 5) {
+    errors.push('Rating must be an integer between 1 and 5');
+  }
+  
   if (!data.user_id) errors.push('Invalid user ID');
 
   console.error('Validation Errors:', errors);
@@ -46,7 +51,6 @@ const uploadImageToCloudinary = async (imageDataUrl) => {
     console.log("Base64 data:", base64Data.slice(0, 100)); // Vérifiez le début du contenu Base64
     console.log("Upload response:", result);
 
-    
     return result.secure_url;
   } catch (error) {
     console.error('Cloudinary upload error:', error);
@@ -87,6 +91,7 @@ export async function getSubscriptionByUserId(req, res) {
         amount::float,
         to_char(date, 'YYYY-MM-DD') as date,
         recurrence,
+        rating,
         image_url,
         created_at
       FROM subscriptions 
@@ -115,8 +120,9 @@ export async function createSubscription(req, res) {
       });
     }
 
-    const { label, amount, date, recurrence, image, user_id } = req.body;
+    const { label, amount, date, recurrence, image, user_id, rating } = req.body;
     const amountNum = parseFloat(amount).toFixed(2);
+    const ratingInt = parseInt(rating);
 
     // Upload de l'image sur Cloudinary si elle existe
     let imageUrl = null;
@@ -126,9 +132,9 @@ export async function createSubscription(req, res) {
 
     const [subscription] = await sql`
       INSERT INTO subscriptions 
-        (user_id, label, amount, date, recurrence, image_url) 
+        (user_id, label, amount, date, recurrence, rating, image_url) 
       VALUES 
-        (${user_id}, ${label.trim()}, ${amountNum}, ${date}::date, ${recurrence}, ${imageUrl || null})
+        (${user_id}, ${label.trim()}, ${amountNum}, ${date}::date, ${recurrence}, ${ratingInt}, ${imageUrl || null})
       RETURNING 
         id,
         user_id,
@@ -136,8 +142,9 @@ export async function createSubscription(req, res) {
         amount::float,
         to_char(date, 'YYYY-MM-DD') as date,
         recurrence,
+        rating,
         image_url,
-        created_at`;
+        created_at`; 
 
     res.status(201).json(subscription);
 
@@ -221,4 +228,3 @@ export async function getSummaryByUserId(req, res) {
     });
   }
 };
-
