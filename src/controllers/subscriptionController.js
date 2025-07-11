@@ -78,6 +78,8 @@ const deleteImageFromCloudinary = async (imageUrl) => {
 export async function getSubscriptionByUserId(req, res) {
   try {
     const { userId } = req.params;
+    console.log('Trying to fetch subscriptions for user:', req.params.userId); // Log ajouté
+   
 
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
